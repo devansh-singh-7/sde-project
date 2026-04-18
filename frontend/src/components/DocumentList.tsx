@@ -54,8 +54,8 @@ export default function DocumentList() {
 
         return (
           <Link
-            key={doc.id || (doc as any)._id || i}
-            to={`/documents/${doc.id || (doc as any)._id}`}
+            key={doc.id || (doc as unknown as Record<string, unknown>)._id as string || i}
+            to={`/documents/${doc.id || (doc as unknown as Record<string, unknown>)._id as string}`}
             className="glass-card-light flex items-center justify-between p-4 hover:border-primary/20 transition-all duration-300 group animate-fade-slide-up"
             style={{ animationDelay: `${i * 60}ms` }}
           >

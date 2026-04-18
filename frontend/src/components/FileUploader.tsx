@@ -66,7 +66,7 @@ export default function FileUploader({ onUploadComplete }: Props) {
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: (accepted, fileRejections) => {
-        onDrop(accepted, fileRejections as any);
+        onDrop(accepted, fileRejections as unknown as { errors: { message: string }[] }[]);
     },
     accept: ACCEPT_MAP,
     maxSize: MAX_SIZE,
@@ -88,12 +88,14 @@ export default function FileUploader({ onUploadComplete }: Props) {
         setStatus('ready');
         onUploadComplete?.(res.document_id);
       }, 1500);
-    } catch (err: any) {
+    } catch (err: unknown) {
       setStatus('error');
-      const detail = err?.response?.data?.detail;
-      if (err?.response?.status === 413) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const e = err as any;
+      const detail = e?.response?.data?.detail;
+      if (e?.response?.status === 413) {
         setErrorMsg('File exceeds the maximum allowed size');
-      } else if (err?.response?.status === 415) {
+      } else if (e?.response?.status === 415) {
         setErrorMsg('Unsupported file type');
       } else {
         setErrorMsg(detail || 'Upload failed. Please try again.');

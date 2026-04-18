@@ -39,8 +39,13 @@ export function useRegister() {
       toast.success('Account created!');
       navigate('/');
     },
-    onError: (err: any) => {
-      toast.error(err?.response?.data?.detail || 'Registration failed');
+    onError: (err: unknown) => {
+      let msg = 'Registration failed';
+      if (err instanceof Error) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        msg = (err as any)?.response?.data?.detail || msg;
+      }
+      toast.error(msg);
     },
   });
 }

@@ -40,13 +40,15 @@ export default function ChatWindow({ documentId, onTimestampClick }: Props) {
 
   // Cleanup EventSource on unmount
   useEffect(() => {
+    const source = eventSourceRef.current;
     return () => {
-      eventSourceRef.current?.close();
+      source?.close();
     };
   }, []);
 
   // Reset messages when document changes
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMessages([]);
     setInput('');
     setIsStreaming(false);

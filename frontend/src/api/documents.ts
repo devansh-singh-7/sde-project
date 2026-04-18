@@ -19,18 +19,19 @@ export const uploadDocument = async (
 };
 
 export const getDocuments = async (skip = 0, limit = 20): Promise<Document[]> => {
-  const { data } = await client.get<any[]>('/upload/documents', {
+  const { data } = await client.get<Record<string, unknown>[]>('/upload/documents', {
     params: { skip, limit },
   });
-  return data.map(d => ({ ...d, id: d.id || d._id }));
+  return data.map(d => ({ ...(d as unknown as Document), id: (d.id as string) || (d._id as string) }));
 };
 
 export const getDocument = async (id: string): Promise<DocumentDetail> => {
-  const { data } = await client.get<any>(`/upload/documents/${id}`);
+  const { data } = await client.get<Record<string, unknown>>(`/upload/documents/${id}`);
   if (data?.document) {
-    data.document.id = data.document.id || data.document._id;
+    const doc = data.document as Record<string, unknown>;
+    doc.id = (doc.id as string) || (doc._id as string);
   }
-  return data;
+  return data as unknown as DocumentDetail;
 };
 
 export const deleteDocument = async (id: string): Promise<void> => {

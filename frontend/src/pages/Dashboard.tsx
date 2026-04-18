@@ -21,7 +21,7 @@ export default function Dashboard() {
     [readyDocs, selectedDocId]
   );
 
-  const handleUploadComplete = (_documentId: string) => {
+  const handleUploadComplete = () => {
     qc.invalidateQueries({ queryKey: ['documents'] });
   };
 

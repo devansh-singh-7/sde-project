@@ -29,8 +29,12 @@ export function useUploadDocument() {
       qc.invalidateQueries({ queryKey: ['documents'] });
       toast.success('File uploaded successfully!');
     },
-    onError: (err: any) => {
-      const msg = err?.response?.data?.detail || 'Upload failed';
+    onError: (err: unknown) => {
+      let msg = 'Upload failed';
+      if (err instanceof Error) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        msg = (err as any)?.response?.data?.detail || msg;
+      }
       toast.error(msg);
     },
   });
