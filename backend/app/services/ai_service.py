@@ -44,7 +44,7 @@ SUMMARIZE_PROMPT = ChatPromptTemplate.from_template(SUMMARIZE_TEMPLATE)
 
 class VectorStoreService:
     def __init__(self):
-        if settings.GEMINI_API_KEY == "dummy_gemini_api_key":
+        if not settings.GEMINI_API_KEY or settings.GEMINI_API_KEY == "dummy_gemini_api_key":
             from langchain_community.embeddings.fake import FakeEmbeddings
             self.embeddings = FakeEmbeddings(size=768)
         else:
@@ -107,7 +107,13 @@ class VectorStoreService:
         store = self.load_vector_store(document_id)
         return store.similarity_search(query, k=k)
 
-vector_store = VectorStoreService()
+_vector_store = None
+
+def get_vector_store() -> VectorStoreService:
+    global _vector_store
+    if _vector_store is None:
+        _vector_store = VectorStoreService()
+    return _vector_store
 
 
 class ChatService:
@@ -141,7 +147,7 @@ class ChatService:
     async def answer_question(self, document_id: str, question: str, chat_history: List[Dict[str, str]] = None) -> Dict[str, Any]:
         logger.info(f"Answering question for document {document_id}")
         try:
-            store = vector_store.load_vector_store(document_id)
+            store = get_vector_store().load_vector_store(document_id)
         except Exception as e:
             logger.error(f"Vector store load failed: {e}")
             return {"answer": "Document index not found.", "sources": [], "relevant_timestamp": None}
@@ -194,7 +200,7 @@ class ChatService:
             return "Transcript not available."
 
         # Chunk and summarize each chunk, then combine
-        chunks = vector_store.text_splitter.split_text(doc.transcript_text)
+        chunks = get_vector_store().text_splitter.split_text(doc.transcript_text)
 
         chain = SUMMARIZE_PROMPT | self.llm | StrOutputParser()
 
@@ -219,7 +225,7 @@ class ChatService:
             return "Summarization failed."
 
     async def stream_answer(self, document_id: str, question: str, chat_history: List[Dict[str, str]] = None) -> AsyncGenerator[str, None]:
-        store = vector_store.load_vector_store(document_id)
+        store = get_vector_store().load_vector_store(document_id)
         retriever = store.as_retriever(search_kwargs={"k": 5})
         docs = retriever.invoke(question)
         context = "\n\n".join([doc.page_content for doc in docs])

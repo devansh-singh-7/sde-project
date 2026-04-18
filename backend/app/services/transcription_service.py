@@ -11,7 +11,7 @@ from tenacity import retry, wait_exponential, stop_after_attempt
 from app.core.config import settings
 from app.models.document import Document, FileType, DocumentStatus
 from app.models.transcript import TranscriptSegment
-from app.services.ai_service import vector_store
+from app.services.ai_service import get_vector_store
 
 # Initialize AsyncOpenAI client
 client = AsyncOpenAI(api_key=settings.OPENAI_API_KEY)
@@ -168,7 +168,7 @@ async def process_document(document_id: UUID):
 
         # Call vector_store_service to index
         try:
-            await vector_store.build_vector_store(doc.id, result["full_text"], db_segments)
+            await get_vector_store().build_vector_store(doc.id, result["full_text"], db_segments)
         except Exception as e:
             print(f"Vector indexing non-fatal error: {e}")
             pass
