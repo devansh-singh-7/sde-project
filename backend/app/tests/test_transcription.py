@@ -171,8 +171,10 @@ class TestProcessDocument:
 
         with patch("app.services.transcription_service.transcription_service") as mock_ts:
             mock_ts.transcribe = AsyncMock(return_value=mock_result)
-            with patch("app.services.transcription_service.vector_store") as mock_vs:
+            with patch("app.services.transcription_service.get_vector_store") as mock_get_vs:
+                mock_vs = MagicMock()
                 mock_vs.build_vector_store = AsyncMock()
+                mock_get_vs.return_value = mock_vs
                 await process_document(doc.id)
 
         updated = await Document.find_one(Document.id == doc.id)
