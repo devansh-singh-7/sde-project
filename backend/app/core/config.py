@@ -1,5 +1,6 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from typing import Optional
+import os
 
 class Settings(BaseSettings):
     PROJECT_NAME: str = "AI Q&A App"
@@ -24,7 +25,7 @@ class Settings(BaseSettings):
     AWS_BUCKET_NAME: Optional[str] = None
     
     # File Upload Settings
-    UPLOAD_DIR: str = "uploads"
+    UPLOAD_DIR: str = "/tmp/uploads" if os.getenv("VERCEL") == "1" else "uploads"
     MAX_FILE_SIZE_MB: int = 500
 
     model_config = SettingsConfigDict(env_file=(".env", "../.env"), case_sensitive=True, extra="ignore")

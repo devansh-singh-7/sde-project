@@ -1,4 +1,4 @@
-import client from './client';
+import client, { apiBaseUrl } from './client';
 import type { ChatRequest, ChatResponse, SummaryResponse } from '../types';
 
 export const chatApi = async (payload: ChatRequest): Promise<ChatResponse> => {
@@ -19,7 +19,7 @@ export const streamChatApi = async (
   question: string,
   token: string
 ): Promise<ReadableStreamDefaultReader<Uint8Array>> => {
-  const url = `/api/v1/chat/stream?document_id=${encodeURIComponent(documentId)}&question=${encodeURIComponent(question)}`;
+  const url = `${apiBaseUrl}/chat/stream?document_id=${encodeURIComponent(documentId)}&question=${encodeURIComponent(question)}`;
   const res = await fetch(url, {
     headers: { Authorization: `Bearer ${token}` },
   });

@@ -1,8 +1,11 @@
 import axios from 'axios';
 import { useAuthStore } from '../store/authStore';
 
+const rawApiBaseUrl = import.meta.env.VITE_API_BASE_URL || '/_/backend/api/v1';
+const apiBaseUrl = rawApiBaseUrl.endsWith('/') ? rawApiBaseUrl.slice(0, -1) : rawApiBaseUrl;
+
 const client = axios.create({
-  baseURL: '/api/v1',
+  baseURL: apiBaseUrl,
   headers: { 'Content-Type': 'application/json' },
 });
 
@@ -27,4 +30,5 @@ client.interceptors.response.use(
   }
 );
 
+export { apiBaseUrl };
 export default client;

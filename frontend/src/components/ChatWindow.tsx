@@ -3,6 +3,7 @@ import { Send, Bot, User, Play, Trash2, Sparkles } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 import type { ChatMessage, ChatResponse } from '../types';
 import { chatApi } from '../api/chat';
+import { apiBaseUrl } from '../api/client';
 
 interface Props {
   documentId: string;
@@ -68,7 +69,7 @@ export default function ChatWindow({ documentId, onTimestampClick }: Props) {
 
       eventSourceRef.current?.close();
 
-      const url = `/api/v1/chat/stream?document_id=${encodeURIComponent(documentId)}&question=${encodeURIComponent(question)}&token=${encodeURIComponent(token || '')}`;
+      const url = `${apiBaseUrl}/chat/stream?document_id=${encodeURIComponent(documentId)}&question=${encodeURIComponent(question)}&token=${encodeURIComponent(token || '')}`;
 
       try {
         const res = await fetch(url, {

@@ -18,7 +18,7 @@ function ProtectedLayout() {
   if (!token) return <Navigate to="/login" replace />;
 
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className="flex min-h-screen bg-bg">
       <Navbar />
       <main className="flex-1 ml-64 p-8">
         <Outlet />
@@ -58,10 +58,11 @@ export default function App() {
         position="top-right"
         toastOptions={{
           style: {
-            borderRadius: '12px',
-            background: '#0F172A',
-            color: '#fff',
-            fontSize: '14px',
+            borderRadius: '8px',
+            background: 'var(--color-card, #1E1E1E)',
+            color: 'var(--color-text, #E8E8E8)',
+            fontSize: '13px',
+            border: '1px solid var(--color-border, #2A2A2A)',
           },
         }}
       />
