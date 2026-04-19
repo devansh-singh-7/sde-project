@@ -1,3 +1,9 @@
+[project]
+name = "backend"
+version = "1.0.0"
+description = "AI Q&A Backend API"
+dependencies = []
+
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["app/tests"]
